@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "Start": "node ./backend/index.js",
+    "dev": "nodemon ./backend/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-
   "dependencies": {
-    "express": "^5.2.1"
+    "dotenv": "^17.4.0",
+    "express": "^5.2.1",
+    "mongoose": "^9.3.3",
+    "nodemon": "^3.1.14"
   }
 }
