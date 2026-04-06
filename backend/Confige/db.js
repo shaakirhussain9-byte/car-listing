@@ -6,7 +6,7 @@ const connectDB =  async()=>
 
     .then(()=>{
     })
-    .catch(() =>{
+    .catch((err) =>{
         console.log(err)
     })
     export default connectDB
