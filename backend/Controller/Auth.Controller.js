@@ -1,7 +1,8 @@
 import bcryptjs from "bcryptjs";
 import User from "../Model/User.Model.js";
 
-export const Signup = async (req, res) => {
+
+export const Signup = async (req, res, next) => {
   try {
     // Get data from req.body
     const { username, password, email } = req.body;
@@ -48,10 +49,7 @@ export const Signup = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+    next(error)
+  
   }
 };
