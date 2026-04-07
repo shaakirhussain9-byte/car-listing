@@ -6,4 +6,4 @@ const Signing = () => {
   )
 };
 
-export default Signing
+export default Signing;
