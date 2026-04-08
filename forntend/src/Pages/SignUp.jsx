@@ -1,10 +1,15 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
 
-  // states
   const [formData, setFormData] = useState({});
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate(); // ✅ added
 
   // handle change
   const handleChange = (e) => {
@@ -14,27 +19,49 @@ const SignUp = () => {
     });
   };
 
-   console.log(formData);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const res = await fetch("/api/auth/SignUp",{
-        method:"POST",
-        headers:{"Content-type":"application/json"},
-        body:JSON.stringify(formData)
-      })
-      const data =  await res.json()
-      if(data.success===false)
-      {
-        return
+      setLoading(true);
+      setError(null);
+
+      // validation
+      if (!formData.username || !formData.email || !formData.password) {
+        toast.error("Please fill all the fields");
+        setLoading(false);
+        return;
       }
-      
+
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message);
+        toast.error(data.message || "Registration failed");
+        setLoading(false);
+        return;
+      }
+
+      toast.success("Registration successful");
+
+      setLoading(false);
+
+      // ✅ redirect after success
+      navigate("/Signing");
+
     } catch (error) {
       console.log(error);
-      
+      toast.error("Server error");
+      setLoading(false);
     }
-   
   };
 
   return (
@@ -42,11 +69,12 @@ const SignUp = () => {
       <h1 className='text-3xl text-center font-semibold my-7'>Sign Up</h1>
 
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+
         <input
           onChange={handleChange}
           className='border p-3 rounded-lg'
           type='text'
-          placeholder='username'
+          placeholder='Username'
           id='username'
         />
 
@@ -66,10 +94,17 @@ const SignUp = () => {
           id='password'
         />
 
-        <button className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-90'>
-          Sign Up
+        <button
+          disabled={loading}
+          className='bg-slate-700 text-white rounded-lg p-3 uppercase disabled:opacity-50'
+        >
+          {loading ? "Loading..." : "Sign Up"}
         </button>
       </form>
+
+      {error && (
+        <p className='text-red-500 mt-3'>{error}</p>
+      )}
 
       <div className='mt-4'>
         <span>Have an account? </span>
@@ -77,6 +112,8 @@ const SignUp = () => {
           <span className='text-blue-700'>Sign-In</span>
         </Link>
       </div>
+
+      <ToastContainer />
     </div>
   );
 };
