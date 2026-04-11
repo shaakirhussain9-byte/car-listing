@@ -2,12 +2,12 @@ import bcryptjs from "bcryptjs";
 import User from "../Model/User.Model.js";
 import jwt from "jsonwebtoken";
 
-// ================= SIGNUP =================
-export const Signup = async (req, res, next) => {
+// ================= SIGN UP =================
+export const Signup = async (req, res) => {
   try {
     const { username, password, email } = req.body;
 
-    // check fields
+    // validation
     if (!username || !password || !email) {
       return res.status(400).json({
         success: false,
@@ -15,7 +15,7 @@ export const Signup = async (req, res, next) => {
       });
     }
 
-    // check user
+    // check existing user
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
@@ -36,11 +36,11 @@ export const Signup = async (req, res, next) => {
 
     const savedUser = await newUser.save();
 
-    // response ✅ (MUHIIM)
+    // response (no password)
     res.status(201).json({
       success: true,
       message: "User registered successfully",
-      data: {
+      user: {
         _id: savedUser._id,
         username: savedUser.username,
         email: savedUser.email,
@@ -48,59 +48,70 @@ export const Signup = async (req, res, next) => {
     });
 
   } catch (error) {
-    res.status(500).json({   // ❗ FIX: ha isticmaalin next(error) kaliya
+    console.log(error);
+    res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
 
-// ================= SIGNIN =================
-export const Signing = async (req, res, next) => {
+
+// ================= SIGN IN =================
+export const Signing = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const validUser = await User.findOne({ email });
+    // validation
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
+    }
 
-    // ❗ FIX: error handling
+    // check user
+    const validUser = await User.findOne({ email });
     if (!validUser) {
       return res.status(404).json({
-        success: false,
         message: "User not found",
       });
     }
 
-    // ❗ FIX: compareSync sax
+    // check password
     const isMatch = bcryptjs.compareSync(password, validUser.password);
-
-    // ❗ FIX: condition khaldan ayaa jiray
     if (!isMatch) {
       return res.status(401).json({
-        success: false,
         message: "Invalid credentials",
       });
     }
 
-    // remove password
-    const { password: pass, ...rest } = validUser._doc;
-
-    // ❗ FIX: JWT_SECRET spelling
+    // create token
     const token = jwt.sign(
       { id: validUser._id },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    // ❗ FIX: httpOnly spelling
+    // remove password from response
+    const { password: pass, ...rest } = validUser._doc;
+
+    // send cookie + response
     res
-      .cookie("access_token", token, { httpOnly: true })
+      .cookie("access_token", token, {
+        httpOnly: true,
+        secure: false, // 👉 true haddii aad HTTPS isticmaaleyso
+        sameSite: "strict",
+      })
       .status(200)
-      .json(rest);
+      .json({
+        success: true,
+        user: rest,
+      });
 
   } catch (error) {
+    console.log(error);
     res.status(500).json({
-      success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
