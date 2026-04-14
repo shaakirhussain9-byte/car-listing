@@ -1,24 +1,29 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+//import OAuth from '../Components/OAuth';
 
 const SignUp = () => {
 
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: ''
+  });
+
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate(); // ✅ added
 
   // handle change
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value   // ✅ FIXED HERE
     });
   };
 
+  // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,8 +46,15 @@ const SignUp = () => {
         body: JSON.stringify(formData)
       });
 
-      const data = await res.json();
+      // ⚠️ check if response has JSON
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Invalid JSON from server");
+      }
 
+      // backend error
       if (!res.ok) {
         setError(data.message);
         toast.error(data.message || "Registration failed");
@@ -50,16 +62,19 @@ const SignUp = () => {
         return;
       }
 
+      // success
       toast.success("Registration successful");
+      setFormData({
+        username: '',
+        email: '',
+        password: ''
+      });
 
       setLoading(false);
 
-      // ✅ redirect after success
-      navigate("/Signing");
-
     } catch (error) {
       console.log(error);
-      toast.error("Server error");
+      toast.error(error.message || "Server error");
       setLoading(false);
     }
   };
@@ -71,6 +86,7 @@ const SignUp = () => {
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
 
         <input
+          value={formData.username}
           onChange={handleChange}
           className='border p-3 rounded-lg'
           type='text'
@@ -79,6 +95,7 @@ const SignUp = () => {
         />
 
         <input
+          value={formData.email}
           onChange={handleChange}
           className='border p-3 rounded-lg'
           type='email'
@@ -87,6 +104,7 @@ const SignUp = () => {
         />
 
         <input
+          value={formData.password}
           onChange={handleChange}
           className='border p-3 rounded-lg'
           type='password'
@@ -100,6 +118,7 @@ const SignUp = () => {
         >
           {loading ? "Loading..." : "Sign Up"}
         </button>
+        {/*<OAuth />*/}
       </form>
 
       {error && (
@@ -112,8 +131,9 @@ const SignUp = () => {
           <span className='text-blue-700'>Sign-In</span>
         </Link>
       </div>
+      
 
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

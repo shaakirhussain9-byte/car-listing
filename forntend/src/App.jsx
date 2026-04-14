@@ -6,6 +6,7 @@ import About from "./Pages/About";
 import Profile from "./Pages/Profile";
 import Hearder from "./Components/Hearder";
 import Signing from "./Pages/Signing";
+import PrivateRoute from "./Components/PrivateRoute";
 
 const App = () => {
   return (
@@ -14,9 +15,16 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Home/>} />
 
-      <Route path="/Signup" element={<SignUp/>} />
+      <Route path="/sign-up" element={<SignUp/>} />
+         <Route path="/sign-in" element={<Signing />} />
       <Route path="/about" element={<About/>} />
-      <Route path="/Signing" element={<Signing/>} />
+    
+         <Route element={<PrivateRoute />}>
+          <Route path="/profile" element={<Profile />} />
+          {/*<Route path="/create-listing" element={<CreateListing />} />*/}
+        </Route>
+      {/*<Route path="/signin" element={<Signing/>} />*/}
+      
     </Routes>
    
     </>
