@@ -3,31 +3,80 @@ import { useRef, useState } from "react";
 
 const Profile = () => {
   const fileRef = useRef(null);
-  const { currentUser } = useAppContext();
+  const {
+    currentUser,
+    loading,
+    error,
+    updateUserStart,
+    updateUserSuccess,
+    updateUserFailure,
+  } = useAppContext();
+
   const [imageURL, setImageURL] = useState(null);
+  const [updatedData, setUpdatedData] = useState({});
 
-  // function to handle when image is uploaded
+  // upload image
   const handlefileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    try {
+      const file = e.target.files[0];
+      if (!file) return;
 
-    const data = new FormData();
-    data.append("file", file);
-    data.append("upload_preset", "Card List");
+      const data = new FormData();
+      data.append("file", file);
+      data.append("upload_preset", "Card List");
 
-    const res = await fetch(
-      "https://api.cloudinary.com/v1_1/dtx2xinlj/image/upload",
-      {
-        method: "POST",
-        body: data,
-      }
-    );
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dtx2xinlj/image/upload",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
 
-    const uploadedImageURL = await res.json();
-    setImageURL(uploadedImageURL.secure_url);
+      const uploadedImageURL = await res.json();
+
+      setImageURL(uploadedImageURL.secure_url);
+
+      setUpdatedData((prev) => ({
+        ...prev,
+        avatar: uploadedImageURL.secure_url,
+      }));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  console.log(imageURL);
+  // input change
+  const handleChange = (e) => {
+    setUpdatedData({
+      ...updatedData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      updateUserStart();
+
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData), // ✔ fix
+      });
+
+      const data = await res.json();
+
+      if (!data.success) { // ✔ fix
+        updateUserFailure(data.message);
+        return;
+      }
+
+      updateUserSuccess(data);
+    } catch (error) {
+      updateUserFailure(error.message);
+    }
+  };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -35,7 +84,7 @@ const Profile = () => {
         Profile
       </h1>
 
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           onChange={handlefileChange}
           type="file"
@@ -46,11 +95,12 @@ const Profile = () => {
         <img
           onClick={() => fileRef.current.click()}
           src={imageURL || currentUser?.avatar}
-          alt="profile image"
+          alt="profile"
           className="h-24 w-24 rounded-full cursor-pointer object-cover self-center mt-2"
         />
 
         <input
+          onChange={handleChange}
           type="text"
           placeholder="username"
           id="username"
@@ -59,6 +109,7 @@ const Profile = () => {
         />
 
         <input
+          onChange={handleChange}
           type="text"
           placeholder="Email"
           id="email"
@@ -67,14 +118,18 @@ const Profile = () => {
         />
 
         <input
+          onChange={handleChange}
           type="password"
           placeholder="password"
           id="password"
           className="rounded-lg p-3 border"
         />
 
-        <button className="uppercase bg-slate-700 text-white rounded-lg p-3 hover:opacity-95 disabled:opacity-50">
-          Update
+        <button
+          disabled={loading}
+          className="uppercase bg-slate-700 text-white rounded-lg p-3 hover:opacity-95 disabled:opacity-50"
+        >
+          {loading ? "Loading..." : "Update"}
         </button>
       </form>
 
@@ -86,6 +141,10 @@ const Profile = () => {
           Sign Out
         </span>
       </div>
+
+      {error && (
+        <p className="text-red-500 mt-3">{error}</p>
+      )}
     </div>
   );
 };

@@ -9,6 +9,7 @@ export const AppProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
+  
   const [error, setError] = useState(null);
 
   const [loading, setLoading] = useState(false);
@@ -88,9 +89,9 @@ export const AppProvider = ({ children }) => {
     deleteUserSuccess,
     deleteUserFailure,
     signoutUserStart,
-    setCurrentUser,
     signoutUserSuccess,
     signoutUserFailure,
+    setCurrentUser,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

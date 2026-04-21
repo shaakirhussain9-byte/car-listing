@@ -65,6 +65,7 @@ export const Signing = async (req, res) => {
     // validation
     if (!email || !password) {
       return res.status(400).json({
+        success: false, // 👉 added
         message: "Email and password are required",
       });
     }
@@ -73,14 +74,16 @@ export const Signing = async (req, res) => {
     const validUser = await User.findOne({ email });
     if (!validUser) {
       return res.status(404).json({
+        success: false, // 👉 added
         message: "User not found",
       });
     }
 
-    // check password
-    const isMatch = bcryptjs.compareSync(password, validUser.password);
+    // check password (FIX muhiim ah)
+    const isMatch = await bcryptjs.compare(password, validUser.password);
     if (!isMatch) {
       return res.status(401).json({
+        success: false, // 👉 added
         message: "Invalid credentials",
       });
     }
@@ -99,9 +102,8 @@ export const Signing = async (req, res) => {
     res
       .cookie("access_token", token, {
         httpOnly: true,
-        secure: false, // 👉 true haddii aad HTTPS isticmaaleyso
-        sameSite: "strict",
-      })
+        secure: false,
+        sameSite: "strict"   })
       .status(200)
       .json({
         success: true,
@@ -111,6 +113,7 @@ export const Signing = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
+      success: false, // 👉 added
       message: "Server error",
     });
   }
