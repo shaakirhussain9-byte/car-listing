@@ -1,8 +1,16 @@
 import { Router } from "express";
-import { Signing, Signup } from "../Controller/Auth.Controller.js";
-const router = Router()
+import {
+  signup,
+  signin,
+  google,
+  signout,
+} from "../controller/auth.controller.js";
 
-router.post('/Signup', Signup)
-router.post("/Signin", Signing)
+const router = Router();
 
-export default router
+router.post("/signup", signup);
+router.post("/signin", signin);
+router.post("/google", google);
+router.get("/signout", signout);
+
+export default router;

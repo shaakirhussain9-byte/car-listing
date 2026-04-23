@@ -1,7 +1,7 @@
+import { useAppContext } from "../context/AppContext";
 import { useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { useAppContext } from "../Context/AppContext";
 
 const Profile = () => {
   const fileRef = useRef(null);

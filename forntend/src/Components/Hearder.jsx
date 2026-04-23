@@ -1,6 +1,6 @@
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useAppContext } from "../Context/AppContext";
+import { useAppContext } from "../context/AppContext";
 
 const Header = () => {
   const { currentUser } = useAppContext();

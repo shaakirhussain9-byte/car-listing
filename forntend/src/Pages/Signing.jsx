@@ -1,138 +1,96 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useAppContext } from '../Context/AppContext';
-//import OAuth from '../Components/OAuth';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import { useAppContext } from "../context/AppContext";
 
 
-const Signing = () => {
+const SignIn = () => {
+  const {
+    currentUser,
+    signInStart,
+    signInFailure,
+    signInSuccess,
+    loading,
+    error,
+  } = useAppContext();
   const navigate = useNavigate();
+  // states
 
-  const { setCurrentUser } = useAppContext(); // ✅ isticmaalo context
+  const [formData, setFormData] = useState({});
 
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // handle change
+  // function to manage changes of the input elements
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     });
   };
 
-  // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      setLoading(true);
-      setError(null);
+      signInStart();
 
-      // validation
-      if (!formData.email || !formData.password) {
+      // let's check form data first
+      if (!(formData.password && formData.email)) {
         toast.error("Please fill all the fields");
-        setLoading(false);
-        return;
+
+        return; // retn  from the submission
       }
 
       const res = await fetch("/api/auth/signin", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
-
-      let data;
-      try {
-        data = await res.json();
-      } catch {
-        throw new Error("Invalid JSON from server");
-      }
-
-      if (!res.ok) {
-        setError(data.message);
-        toast.error(data.message || "Login failed");
-        setLoading(false);
+      const data = await res.json();
+      if (data.success === false) {
+        signInFailure(data.message);
+        toast.error("Login failed");
         return;
       }
-
-      // ✅ SAVE USER (IMPORTANT)
-      setCurrentUser(data.user); // backend waa inuu soo diraa user
-
-      toast.success("Login successful");
-
-      navigate("/profile"); // redirect home
-
-      setFormData({
-        email: '',
-        password: ''
-      });
-
-    } catch (err) {
-      console.log(err);
-      toast.error(err.message || "Server error");
-    } finally {
-      setLoading(false);
+      signInSuccess(data);
+      navigate("/");
+    } catch (error) {
+      toast.error("Login failed");
+      signInFailure(error.message);
     }
   };
 
+  currentUser && console.log(currentUser);
   return (
-    <div className='p-3 max-w-lg mx-auto'>
-      <h1 className='text-3xl text-center font-semibold my-7'>Sign In</h1>
-
-      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-
+    <div className="p-3 max-w-lg mx-auto">
+      <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
-          value={formData.email}
           onChange={handleChange}
-          className='border p-3 rounded-lg'
-          type='email'
-          placeholder='Email'
-          id='email'
+          className="border p-3 rounded-lg"
+          type="email"
+          placeholder="email"
+          id="email"
         />
-
         <input
-          value={formData.password}
           onChange={handleChange}
-          className='border p-3 rounded-lg'
-          type='password'
-          placeholder='Password'
-          id='password'
+          className="border p-3 rounded-lg"
+          type="password"
+          placeholder="password"
+          id="password"
         />
-
-        <button
-          disabled={loading}
-          className='bg-slate-700 text-white rounded-lg p-3 uppercase disabled:opacity-50'
-        >
-          {loading ? "Loading..." : "Sign In"}
-        </button>
-        {/*<OAuth />*/}
+        <button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
+          Sign In
+        </button>{" "}
+  
       </form>
-
-      {error && (
-        <p className='text-red-500 mt-3'>{error}</p>
-      )}
-
-      <div className='mt-4'>
-        <span>Don't have an account? </span>
+      <div className="flex gap-2 mt-5">
+        <p>Dont have an account?</p>
         <Link to="/sign-up">
-          <span className='text-blue-700'>Sign Up</span>
+          <span className="text-blue-700">Sign Up</span>
         </Link>
-         
       </div>
-     
-
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer />
     </div>
   );
 };
 
-export default Signing;
+export default SignIn;

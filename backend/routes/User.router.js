@@ -3,9 +3,9 @@ import {
   test,
   updateUser,
   deleteUser,
-//  getUserListing,
+  getUserListing,
   getUser,
-} from "../Controller/User.Controller.js";
+} from "../controller/user.controller.js";
 import { verifyToken } from "../utils/verifyToken.js";
 
 const router = Router();
@@ -13,7 +13,7 @@ const router = Router();
 router.get("/", test);
 router.put("/update/:id", verifyToken, updateUser);
 router.delete("/delete/:id", verifyToken, deleteUser);
-//router.get("/listings/:id", verifyToken, getUserListing);
+router.get("/listings/:id", verifyToken, getUserListing);
 router.put("/:id", verifyToken, getUser);
 
 export default router;

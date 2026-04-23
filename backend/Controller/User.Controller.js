@@ -1,5 +1,5 @@
-//import CarListing from "../models/listing.model.js";
-import User from "../Model/User.Model.js";
+import CarListing from "../models/listing.model.js";
+import User from "../Models/user.Model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
 
@@ -47,18 +47,18 @@ export const deleteUser = async (req, res, next) => {
   }
 };
 
-//export const getUserListing = async (req, res, next) => {
-//  if (req.user.id === req.params.id) {
-//    try {
-//      const listings = await CarListing.find({ sellerRef: req.params.id });
-//      res.status(200).json(listings);
-//    } catch (error) {
-//      next(error);
-//    }
-//  } else {
-//    return next(errorHandler(401, "You can only view your own listings"));
-//  }
-//};
+export const getUserListing = async (req, res, next) => {
+  if (req.user.id === req.params.id) {
+    try {
+      const listings = await CarListing.find({ sellerRef: req.params.id });
+      res.status(200).json(listings);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(errorHandler(401, "You can only view your own listings"));
+  }
+};
 
 export const getUser = async (req, res, next) => {
   try {
