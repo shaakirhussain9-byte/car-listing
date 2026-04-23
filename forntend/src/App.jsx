@@ -8,6 +8,7 @@ import Hearder from "./Components/Hearder";
 import Signing from "./Pages/Signing";
 import PrivateRoute from "./Components/PrivateRoute";
 import CreateListing from "./Pages/CreateListing";
+import UpdateListing from "./Pages/UpdateListing.jsx";
 
 const App = () => {
   return (
@@ -23,6 +24,8 @@ const App = () => {
          <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
+          <Route path="/update-listing/:listingId" element={<UpdateListing/>}
+          />
         </Route>
       {/*<Route path="/signin" element={<Signing/>} />*/}
       
