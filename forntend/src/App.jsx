@@ -27,7 +27,7 @@ const App = () => {
           <Route path="/update-listing/:listingId" element={<UpdateListing/>}
           />
         </Route>
-      {/*<Route path="/signin" element={<Signing/>} />*/}
+      <Route path="/signin" element={<Signing/>} />
       
     </Routes>
    
