@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "Start": "node ./backend/index.js",
-    "dev": "nodemon ./backend/index.js"
+    "start": "node ./backend/index.js",
+    "dev": "nodemon ./backend/index.js",
+    "build":"npm install && npm install --include=dev --prefix forntend && npm run build --prefix forntend"
   },
   "keywords": [],
   "author": "",

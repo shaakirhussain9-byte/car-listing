@@ -27,12 +27,12 @@ const App = () => {
          <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
-          <Route path="/search" element={<search />} />
           <Route path="/update-listing/:listingId" element={<UpdateListing/>}
           />
         </Route>
       <Route path="/signin" element={<Signing/>} />
      <Route path="/listing/:listingId" element={<Listing />} />
+          <Route path="/search" element={<Search />} />
       
       
     </Routes>
