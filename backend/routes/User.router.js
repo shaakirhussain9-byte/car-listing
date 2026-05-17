@@ -6,7 +6,7 @@ import {
   getUserListing,
   getUser,
 } from "../Controller/User.Controller.js";
-import { verifyToken } from "../utils/verifyToken.js";
+import { verifyToken } from "../Utils/verifyToken.js";
 
 const router = Router();
 
