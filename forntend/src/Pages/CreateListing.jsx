@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../Context/AppContext";
 import { useNavigate } from "react-router-dom";
 const CreateListing = () => {
   const navigate = useNavigate();
