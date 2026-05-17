@@ -6,7 +6,7 @@ import {
   getListing,
   getListings,
 } from "../Controller/listing.Controller.js";
-import { verifyToken } from "../utils/verifyToken.js";
+import { verifyToken } from "../Utils/verifyToken.js";
 const router = Router();
 
 router.post("/", createListing);
