@@ -11,7 +11,7 @@ import { MdCalendarMonth } from "react-icons/md";
 import { BsFillFuelPumpFill, BsSpeedometer } from "react-icons/bs";
 import { GiGearStickPattern } from "react-icons/gi";
 import { useAppContext } from "../context/AppContext";
-import Contact from "../components/Contact";
+import Contact from "../Components/Contact";
 
 const Listing = () => {
   const { listingId } = useParams();
