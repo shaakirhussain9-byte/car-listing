@@ -1,6 +1,6 @@
 import CarListing from "../Models/listing.model.js";
 import User from "../Models/user.Model.js";
-import { errorHandler } from "../utils/error.js";
+import { errorHandler } from "../Utils/error.js";
 import bcryptjs from "bcryptjs";
 
 export const test = (req, res) =>
