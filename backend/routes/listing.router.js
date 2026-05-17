@@ -5,7 +5,7 @@ import {
   updateListing,
   getListing,
   getListings,
-} from "../Controller/Listing.Controller.js";
+} from "../Controller/listing.Controller.js";
 import { verifyToken } from "../utils/verifyToken.js";
 const router = Router();
 
