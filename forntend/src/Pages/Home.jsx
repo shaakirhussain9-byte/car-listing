@@ -4,7 +4,7 @@ import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 import { useEffect, useState } from "react";
-import ListingItem from "../components/ListingItem";
+import ListingItem from "../Components/ListingItem";
 
 SwiperCore.use([Navigation]);
 
