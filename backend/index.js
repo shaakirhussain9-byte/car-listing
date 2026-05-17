@@ -1,7 +1,7 @@
 import express from "express"
 import dotenv, { config } from "dotenv";
 import connectDB from "./Confige/db.js"
-import UserRouter from "./routes/user.router.js";
+import UserRouter from "./routes/User.router.js";
 import authRouter from './routes/Auth.router.js';
 import cookieParser from "cookie-parser";
 import listingRouter from "./routes/listing.router.js";
