@@ -1,4 +1,4 @@
-import CarListing from "../models/listing.model.js";
+import CarListing from "../Models/listing.model.js";
 import User from "../Models/user.Model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
