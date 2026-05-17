@@ -10,7 +10,7 @@ import { IoLogoModelS } from "react-icons/io";
 import { MdCalendarMonth } from "react-icons/md";
 import { BsFillFuelPumpFill, BsSpeedometer } from "react-icons/bs";
 import { GiGearStickPattern } from "react-icons/gi";
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../Context/AppContext";
 import Contact from "../Components/Contact";
 
 const Listing = () => {
