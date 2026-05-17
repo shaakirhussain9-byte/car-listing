@@ -5,7 +5,7 @@ import {
   deleteUser,
   getUserListing,
   getUser,
-} from "../controller/User.Controller.js";
+} from "../Controller/User.Controller.js";
 import { verifyToken } from "../utils/verifyToken.js";
 
 const router = Router();
