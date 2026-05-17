@@ -1,6 +1,6 @@
 import { FaSearch } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../Context/AppContext";
 import { useState, useEffect } from "react";
 const Header = () => {
   const navigate = useNavigate();
